@@ -1,0 +1,28 @@
+{
+  "name": "telegram-youtube-bot",
+  "version": "1.0.0",
+  "description": "A telegram bot to download musics from youtube",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hugorplobo/telegram-youtube-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/hugorplobo/telegram-youtube-bot/issues"
+  },
+  "homepage": "https://github.com/hugorplobo/telegram-youtube-bot#readme",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "node-telegram-keyboard-wrapper": "^3.0.0",
+    "tgfancy": "^0.13.0",
+    "ytdl-core": "^4.8.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.7"
+  }
+}
