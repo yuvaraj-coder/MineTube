@@ -37,6 +37,10 @@ function formatTime(seconds) {
 
 module.exports = async (bot, msg) => {
     const chatId = msg.chat.id;
+    const chat = global.chats.find(item => item.fromId === msg.from.id);
+
+    if (chat) return bot.sendMessage(chatId, "Calm down! One music at a time");
+
     const url = msg.text;
     const searchingMessage = await bot.sendMessage(chatId, `:mag_right: Searching for: ${url}`, { disable_web_page_preview: true });
 
