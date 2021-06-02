@@ -1,12 +1,11 @@
 const Tgfancy = require("tgfancy");
-const dotenv = require("dotenv");
 const ytdl = require("ytdl-core");
+const dotenv = require("dotenv").config();
 
 const initGreetings = require("./functions/greetings");
 const initHandleVideoButtons = require("./functions/handleVideoButtons");
 const initGetVideoLinks = require("./functions/getVideoLinks");
 
-dotenv.config();
 global.chats = [];
 
 const bot = new Tgfancy(process.env.TOKEN, {

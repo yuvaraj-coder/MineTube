@@ -4,6 +4,7 @@ const sendVideoInfo = require("./sendVideoInfo");
 module.exports = (bot) => {
     bot.on("text", msg => {
         const chatId = msg.chat.id;
+        if (msg.text.startsWith("/start")) return;
         if (ytdl.validateURL(msg.text)) {
             sendVideoInfo(bot, msg);
         } else {
