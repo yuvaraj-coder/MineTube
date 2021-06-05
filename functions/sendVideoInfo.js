@@ -47,7 +47,7 @@ module.exports = async (bot, msg) => {
     bot.sendChatAction(chatId, "typing");
 
     const videoInfo = await ytdl.getInfo(url);
-    videoInfo.videoDetails.lengthSeconds = formatTime(videoInfo.videoDetails.lengthSeconds);
+    const contentLength = (Number(ytdl.chooseFormat(videoInfo.formats, { filter: "audioonly" }).contentLength) / (1024 * 1024)).toFixed(2);
     const image = fs.createWriteStream(msg.from.id.toString() + ".jpeg");
     const request = https.get(videoInfo.videoDetails.thumbnails[videoInfo.videoDetails.thumbnails.length - 2].url, res => {
         res.pipe(image);
@@ -56,14 +56,20 @@ module.exports = async (bot, msg) => {
             const photoCaption = [
                 `🎬 <a href="${url}">${videoInfo.videoDetails.title}</a>`,
                 `👤 <a href="${videoInfo.videoDetails.author.channel_url}">${videoInfo.videoDetails.author.name}</a>`,
-                `🕑 <b>${videoInfo.videoDetails.lengthSeconds}</b> 💾 <i>Soon</i>`
+                `🕑 <b>${formatTime(videoInfo.videoDetails.lengthSeconds)}</b>   💾 <b>${contentLength} MB</b>`
             ];
             const videoButtons = new InlineKeyboard();
             const buttonsRow = new Row(new InlineKeyboardButton("❌ Cancel", "callback_data", "cancel"), new InlineKeyboardButton("📥 Download", "callback_data", "download"));
             videoButtons.push(buttonsRow);
 
-            const thumbnail = await bot.sendPhoto(chatId, fs.createReadStream(msg.from.id.toString() + ".jpeg"), { caption: photoCaption.join("\n"), parse_mode: "HTML", reply_markup: videoButtons.getMarkup() });
-            global.chats.push({ videoInfo, fromId: msg.from.id, thumbnail });
+            if (Number(contentLength) > 50) {
+                const thumbnail = await bot.sendPhoto(chatId, fs.createReadStream(msg.from.id.toString() + ".jpeg"), { caption: photoCaption.join("\n"), parse_mode: "HTML" });
+                bot.sendMessage(chatId, "❌ Your video is too powerful!\nUnfortunately, Telegram limits me to only 50 MB of upload :(");
+            } else {
+                const thumbnail = await bot.sendPhoto(chatId, fs.createReadStream(msg.from.id.toString() + ".jpeg"), { caption: photoCaption.join("\n"), parse_mode: "HTML", reply_markup: videoButtons.getMarkup() });
+                global.chats.push({ videoInfo, fromId: msg.from.id, thumbnail });
+            }
+
             bot.deleteMessage(chatId, searchingMessage.message_id);
             fs.unlinkSync(msg.from.id.toString() + ".jpeg");
         });
