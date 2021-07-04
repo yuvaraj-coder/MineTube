@@ -4,7 +4,7 @@ const fs = require("fs");
 module.exports = async (bot, query, msg) => {
     const chatId = query.message.chat.id;
     const { videoInfo } = global.chats.find(chat => chat.fromId === query.from.id);
-    bot.sendChatAction(chatId, "upload_audio");
+    bot.sendChatAction(chatId, "record_voice");
 
     const stream = ytdl.downloadFromInfo(videoInfo, { filter: "audioonly" })
         .pipe(fs.createWriteStream(query.from.id + ".mp3")).on("finish", async () => {
